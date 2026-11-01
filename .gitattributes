@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.patch text eol=lf
+dist/standalone.js text eol=lf
