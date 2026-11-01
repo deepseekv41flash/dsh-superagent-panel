@@ -70,6 +70,27 @@ Defaults of the host half can be overridden in the profile patch entry or throug
 | `repo` | `$DSH_SUPERAGENT_REPO`, else `<home>/src/dsh-superagent-prototype` |
 | `profile` | `superagent` |
 | `url` | `http://127.0.0.1:3082` |
+| `autoStart` | `false`; when `true`, loading this plugin in DSH NEXT starts the service if it is not running (sync start after a host reboot) |
+| `autoStartDelayMs` | `8000`, wait for the host to settle first |
+
+### Starting after a host reboot
+
+The service does not start by itself after a reboot. Three options:
+
+```bash
+# 1) panel: open Superagent → press Start
+# 2) command line:
+node scripts/dsh-superagent.mjs start --profile superagent
+# 3) let the plugin start it together with DSH NEXT (recommended):
+#    append to the cordis.patch.yml of the profile DSH NEXT runs with:
+#    - id: dsh-superagent-panel
+#      name: dsh-superagent-panel
+#      config:
+#        autoStart: true
+```
+
+`autoStart` only covers the "not running" case: a service stopped on purpose keeps a `manually-stopped`
+marker and is not started automatically; run `start` once (or delete the marker) to re-enable it.
 
 ## Behaviour
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 — 2026-11-01
+
+- 新增 `autoStart`（默认 `false`）：DSH NEXT 启动并加载本插件后，若服务未运行则自动拉起一次，
+  用于宿主机重启后与 DSH NEXT 同步启动。手动 `stop` 留下的 `manually-stopped` 标记会被尊重，不会自动拉起。
+- 新增 `autoStartDelayMs`（默认 `8000`）：等宿主自身就绪后再启动服务。
+- 自动启动只是调用同一个启动器，与面板「启动」按钮完全等价；失败只记日志、不影响 DSH NEXT。
+- 实测：服务停止状态下加载插件，1.5 s 延迟触发；7.1 s 后 `/orchestrator/api/state` 恢复 200。
+
 ## 0.1.1 — 2026-11-01
 
 首个发布版本：在 DSH NEXT 里内嵌 dsh-superagent 的完整管理面板。

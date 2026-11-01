@@ -70,6 +70,27 @@ host 半的默认值可以在 profile patch 的插件条目里覆盖，也可以
 | `repo` | `$DSH_SUPERAGENT_REPO`，否则 `<home>/src/dsh-superagent-prototype` |
 | `profile` | `superagent` |
 | `url` | `http://127.0.0.1:3082` |
+| `autoStart` | `false`；设 `true` 后，DSH NEXT 启动并加载本插件时会自动拉起未运行的服务（宿主机重启后与 DSH NEXT 同步启动） |
+| `autoStartDelayMs` | `8000`，等宿主就绪后再启动 |
+
+### 开机后怎么启动
+
+宿主机重启后，服务不会自己启动。三种方式任选：
+
+```bash
+# 1) 面板：打开 Superagent → 点「启动」
+# 2) 命令：
+node scripts/dsh-superagent.mjs start --profile superagent
+# 3) 让插件随 DSH NEXT 一起启动（推荐）：
+#    在 DSH NEXT 所用 profile 的 cordis.patch.yml 末尾加：
+#    - id: dsh-superagent-panel
+#      name: dsh-superagent-panel
+#      config:
+#        autoStart: true
+```
+
+`autoStart` 只影响「未运行」的情况：手动 `stop` 过的服务会留下 `manually-stopped` 标记，
+插件不会把它自动拉起来；要恢复自动启动，先 `start` 一次（或删掉该标记）。
 
 ## 界面与行为
 
