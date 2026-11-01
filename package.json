@@ -1,0 +1,62 @@
+{
+  "name": "dsh-superagent-panel",
+  "version": "0.1.1",
+  "description": "DeepSeek Harness (DSH) plugin: a DSH NEXT sidebar entry that embeds the dsh-superagent management panel in a same-origin iframe and starts/stops/restarts its service.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "superagent",
+    "panel",
+    "dashboard",
+    "iframe",
+    "same-origin-proxy",
+    "windows"
+  ],
+  "license": "MIT",
+  "author": "deepseekv41flash",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepseekv41flash/dsh-superagent-panel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/deepseekv41flash/dsh-superagent-panel/issues"
+  },
+  "homepage": "https://github.com/deepseekv41flash/dsh-superagent-panel#readme",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README-en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  },
+  "scripts": {
+    "check": "bash scripts/check.sh"
+  }
+}

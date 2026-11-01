@@ -1,0 +1,10 @@
+# dsh-superagent-panel bundle layer: inserts the panel plugin entry.
+# Every config key is optional. The checkout of deepseek-ai/dsh-superagent-prototype is
+# found via DSH_SUPERAGENT_REPO, else <home>/src/dsh-superagent-prototype.
+- insert:
+    - id: dsh-superagent-panel
+      name: dsh-superagent-panel
+      # config:
+      #   repo: 'D:\work\dsh-superagent-prototype'   # checkout that holds scripts/dsh-superagent.mjs
+      #   profile: superagent                        # DSH profile the service runs under
+      #   url: 'http://127.0.0.1:3082'               # management API origin
