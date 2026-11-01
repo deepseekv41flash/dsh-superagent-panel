@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — 2026-11-01
+
+- 内容与 0.2.0 相同（多实例并行管理），仅版本号变化：0.2.0 发布 npm 时遇到 staged-publish 冲突
+  （`E409 Cannot publish over previously staged version "0.2.0"`），故用 0.2.1 首发到 npm。
+
 ## 0.2.0 — 2026-11-01
 
 - **多实例并行管理**：host 配置新增 `instances: [{ id, label, repo, profile, url, autoStart? }]`，
