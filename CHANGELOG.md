@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — 2026-11-01
+
+- **多实例并行管理**：host 配置新增 `instances: [{ id, label, repo, profile, url, autoStart? }]`，
+  一个 DSH 宿主里可同时管理多个 dsh-superagent 实例（各自 profile、端口、stateDir、监听仓库）。
+- **向后兼容**：没有 `instances` 时沿用原来的 `repo` / `profile` / `url`，内部视为 `id=default`；
+  单实例的接口路径、代理路径与 0.1.4 行为一致。
+- 接口按实例区分：`GET <prefix>/status?id=`、`POST <prefix>/action` 的 body 带 `id`；
+  同源代理改为 `<proxy>/<id>/*`，单实例配置仍保留旧的 `<proxy>/*`。
+- `autoStart` 对每个实例分别生效，各自检查状态并尊重 `manually-stopped` 标记。
+- 客户端工具条新增实例切换（只有 1 个实例时隐藏），每项显示 label + 状态徽标；
+  状态轮询、刷新、启停/重启、打开主 Session、iframe 都跟随当前实例；选择写入 `localStorage`。
+- 文档：中英 README 增加 `instances` 配置示例并说明单实例配置仍有效；`cordis.patch.yml` 注释同步。
+
 ## 0.1.4 — 2026-11-01
 
 - **Web 宿主适配**：同一插件可直接装进 `dsh web` 使用的 profile。Web 页面源是普通 `http(s)://`，

@@ -5,6 +5,23 @@
     - id: dsh-superagent-panel
       name: dsh-superagent-panel
       # config:
+      #   # 单实例（与 0.1.x 相同）：以下三项也可以作为 instances 未填字段的回退值。
       #   repo: 'D:\work\dsh-superagent-prototype'   # checkout that holds scripts/dsh-superagent.mjs
       #   profile: superagent                        # DSH profile the service runs under
       #   url: 'http://127.0.0.1:3082'               # management API origin
+      #   autoStart: true
+      #
+      #   # 多实例：一个宿主并行管理多个实例（每项缺省的 repo/profile/url/autoStart 回退到上面的值）。
+      #   instances:
+      #     - id: superagent
+      #       label: 主实例
+      #       repo: 'D:\work\dsh-superagent-prototype'
+      #       profile: superagent
+      #       url: 'http://127.0.0.1:3082'
+      #       autoStart: true
+      #     - id: superagent2
+      #       label: 第二实例
+      #       repo: 'D:\work\dsh-superagent-prototype'
+      #       profile: superagent2
+      #       url: 'http://127.0.0.1:3083'
+      #       autoStart: false
