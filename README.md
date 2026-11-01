@@ -17,13 +17,13 @@
 ```text
 DSH NEXT (dsh-app://app)
 ├── sidebar.panellist  entry ──→ main(key=superagent) page
-│     ├── toolbar: 状态 / 打开主 Session / 刷新 / 停止|启动 / 重启 / 新标签
-│     ├── iframe  <proxy>/superagent-bridge/?lang=zh
+│     ├── toolbar: 实例切换 / 状态 / 打开主 Session / 刷新 / 停止|启动 / 重启 / 新标签
+│     ├── iframe  <proxy>/<id>/superagent-bridge/?lang=zh
 │     └── postMessage: theme tokens ↑ / open-session ↓
 └── host routes
-      ├── /@dsh-superagent-panel/api/status   → 运行 scripts/dsh-superagent.mjs status
-      ├── /@dsh-superagent-panel/api/action   → start / stop / restart
-      └── /@dsh-superagent-panel/proxy/*      → http://127.0.0.1:3082/*
+      ├── /@dsh-superagent-panel/api/status?id=   → 运行 scripts/dsh-superagent.mjs status
+      ├── /@dsh-superagent-panel/api/action       → start / stop / restart（body 带 id）
+      └── /@dsh-superagent-panel/proxy/<id>/*     → 对应实例的 http://127.0.0.1:<port>/*
 ```
 
 ## 前置
@@ -54,7 +54,9 @@ dev_inject_plugin { "dir": "<本仓库路径>" }
 
 ## 配置
 
-host 半的默认值可以在 profile patch 的插件条目里覆盖，也可以用环境变量：
+host 半的默认值可以在 profile patch 的插件条目里覆盖，也可以用环境变量。
+
+**单实例**（与 0.1.x 完全一致）：
 
 ```yaml
 - id: dsh-superagent-panel
@@ -63,15 +65,42 @@ host 半的默认值可以在 profile patch 的插件条目里覆盖，也可以
     repo: 'D:\work\dsh-superagent-prototype'   # 含 scripts/dsh-superagent.mjs 的 checkout
     profile: superagent                        # 服务运行的 DSH profile
     url: 'http://127.0.0.1:3082'               # 管理 API 源
+    autoStart: true
+```
+
+**多实例**：给 `instances` 数组即可在同一个 DSH 宿主里并行管理多个实例：
+
+```yaml
+- id: dsh-superagent-panel
+  name: dsh-superagent-panel
+  config:
+    autoStartDelayMs: 8000
+    instances:
+      - id: superagent                     # 实例标识：唯一、用于接口和代理路径
+        label: 主实例                       # 工具条上显示的名字，缺省用 id
+        repo: 'D:\work\dsh-superagent-prototype'
+        profile: superagent
+        url: 'http://127.0.0.1:3082'
+        autoStart: true
+      - id: superagent2
+        label: 第二实例
+        repo: 'D:\work\dsh-superagent-prototype'
+        profile: superagent2
+        url: 'http://127.0.0.1:3083'
+        autoStart: false                   # 不随宿主自动启动；仍可手动启动
 ```
 
 | 键 | 默认值 |
 |---|---|
-| `repo` | `$DSH_SUPERAGENT_REPO`，否则 `<home>/src/dsh-superagent-prototype` |
-| `profile` | `superagent` |
-| `url` | `http://127.0.0.1:3082` |
-| `autoStart` | `false`；设 `true` 后，DSH NEXT 启动并加载本插件时会自动拉起未运行的服务（宿主机重启后与 DSH NEXT 同步启动） |
-| `autoStartDelayMs` | `8000`，等宿主就绪后再启动 |
+| `instances` | 不设置时按单实例运行（`id=default`）；数组中每项支持 `id` / `label` / `repo` / `profile` / `url` / `autoStart` |
+| `repo` | `$DSH_SUPERAGENT_REPO`，否则 `<home>/src/dsh-superagent-prototype`；也是 `instances` 中未填项的回退值 |
+| `profile` | `superagent`；也是 `instances` 中未填项的回退值 |
+| `url` | `http://127.0.0.1:3082`；也是 `instances` 中未填项的回退值 |
+| `autoStart` | `false`；设 `true` 后，DSH NEXT 启动并加载本插件时会自动拉起未运行的服务（宿主机重启后与 DSH NEXT 同步启动）；每个实例可用自己的 `autoStart` 覆盖 |
+| `autoStartDelayMs` | `8000`，等宿主就绪后再启动（所有实例共用） |
+
+没有 `instances` 时，单实例的接口与 `<proxy>/*` 代理路径和 0.1.4 保持一致；配置多个实例后，
+每个实例各自跑自己的 `scripts/dsh-superagent.mjs`，停止其中一个不会影响其它实例。
 
 ### 开机后怎么启动
 
@@ -91,6 +120,7 @@ node scripts/dsh-superagent.mjs start --profile superagent
 
 `autoStart` 只影响「未运行」的情况：手动 `stop` 过的服务会留下 `manually-stopped` 标记，
 插件不会把它自动拉起来；要恢复自动启动，先 `start` 一次（或删掉该标记）。
+配置多个实例时，每个实例分别判断（可以只给其中几个实例设 `autoStart: true`）。
 
 ## Web 端
 
@@ -108,7 +138,8 @@ node scripts/dsh-superagent.mjs start --profile superagent
 ## 界面与行为
 
 - 侧栏图标与「自动化任务」同排（`sidebar.panellist`，order 20），点击切到主面板。
-- 工具条：运行状态徽标、**打开主 Session**（`uiWorkspace.openSession(masterId)`）、刷新、停止/启动、重启、新标签（用 panel token 在新标签打开原面板）。
+- 工具条：实例切换（只有 1 个实例时隐藏，每项显示 label + 状态徽标）、运行状态徽标、**打开主 Session**（`uiWorkspace.openSession(masterId)`）、刷新、停止/启动、重启、新标签（用 panel token 在新标签打开原面板）。
+- 状态轮询、刷新、启停/重启、打开主 Session、iframe 都作用于当前选中的实例；选中的实例记在 `localStorage`，刷新/重开后保持。
 - 内嵌面板 = Superagent 原面板的全部内容（概览 / 来源 / 触发 / 评估 / 执行 / 设置，含工单与线程详情页、搜索、术语表）。
 - 面板里的「打开主 Session」通过 `postMessage` 回到外层，由 `uiWorkspace.openSession` 真正跳转。
 - 主题：外层读取 `--dsw-alias-*` 计算值后 postMessage 给 iframe；桥接页自带深色兜底，注入失败也能看。
@@ -120,8 +151,8 @@ node scripts/dsh-superagent.mjs start --profile superagent
 dsh-superagent-panel/
 ├── package.json          # dsh.bundle.patch + dsh.client(platform=web)
 ├── cordis.patch.yml      # bundle 层：insert id=dsh-superagent-panel
-├── lib/index.js          # host 半：状态/动作接口 + 同源反向代理
-├── lib/client.js         # client 半：侧栏入口 + 主面板（iframe、工具条、主题桥）
+├── lib/index.js          # host 半：按实例的状态/动作接口 + 同源反向代理 + 多实例 autoStart
+├── lib/client.js         # client 半：侧栏入口 + 主面板（实例切换、iframe、工具条、主题桥）
 └── scripts/check.sh      # 零构建校验：语法 + 导出 + npm 载荷
 ```
 
@@ -138,6 +169,8 @@ dsh-superagent-panel/
 | 打开主 Session | 面板内按钮 → postMessage → 外层 `uiWorkspace.openSession`，跳到 orchestrator 会话 |
 | 启停重启 | 调用 checkout 里的 `scripts/dsh-superagent.mjs`，返回退出码与最新状态 |
 | 服务未运行时 | 显示「启动」按钮，不产生白屏 |
+| 多实例切换 | 双实例（3082 `superagent` + 3083 `superagent2`）配置下，切换实例后状态与 iframe 各自对应；`/status?id=` 返回各自的 `masterId`；选择写入 `localStorage` |
+| 单实例兼容 | 无 `instances` 时行为与 0.1.4 一致：不显示切换器，旧 `<proxy>/*` 路径仍可用 |
 
 **已知限制**：内嵌页的「部署」设置组是只读的——它依赖 DSH Plugin Manager 的 config form 服务，独立页面里不可用（与在 DSH 内直接打开该面板时的表现一致）。
 
