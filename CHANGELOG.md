@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.2 — 2026-11-01
+## 0.1.3 — 2026-11-01
 
 - 新增 `autoStart`（默认 `false`）：DSH NEXT 启动并加载本插件后，若服务未运行则自动拉起一次，
   用于宿主机重启后与 DSH NEXT 同步启动。手动 `stop` 留下的 `manually-stopped` 标记会被尊重，不会自动拉起。
