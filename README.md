@@ -30,7 +30,7 @@ DSH NEXT (dsh-app://app)
 
 | 项 | 说明 |
 |---|---|
-| DSH NEXT | 装有桌面端的 DSH（Web 端也能加载本插件，但内嵌面板依赖桌面宿主） |
+| DSH 宿主 | 桌面端（DSH NEXT）或 Web 端（`dsh web`）都行；本插件不依赖 Electron，Web 端反而少了跨协议 iframe 的问题 |
 | dsh-superagent | 已按原型搭好、服务跑在 profile `superagent`、端口 `3082`（Windows 适配见 [superagent-playground 的补丁](https://github.com/deepseekv41flash/superagent-playground)） |
 | 服务侧桥接插件 | `dsh-superagent-bridge` 必须装在**跑服务那个 profile** 里，否则 iframe 没有页面可显示 |
 
@@ -91,6 +91,19 @@ node scripts/dsh-superagent.mjs start --profile superagent
 
 `autoStart` 只影响「未运行」的情况：手动 `stop` 过的服务会留下 `manually-stopped` 标记，
 插件不会把它自动拉起来；要恢复自动启动，先 `start` 一次（或删掉该标记）。
+
+## Web 端
+
+同一份插件在 `dsh web` 的宿主里也能用（`dsh.client.platform` 本来就是 `web`）：
+
+- 把本插件装进 **`dsh web` 所用的那个 profile**（`--profile` 参数对应的 profile，默认 `web`）：
+  `dsh plugin --profile web add dsh-superagent-panel`，并确认该 profile 的 `dsh.profile.bundles` 里有它；
+- 浏览器打开 `dsh web` 打印的地址，侧栏同样出现 Superagent 入口，内嵌面板、主题注入、
+  「打开主 Session」、启停/重启、`autoStart` 都照常工作；
+- Web 页面的源是 `http(s)://<host>:<port>`，同源代理后的 iframe 天然可用——之前桌面端遇到的
+  `dsh-app://` 跨协议拦截不存在；即使 Web 端走 HTTPS，代理在服务端转发到 `http://127.0.0.1:3082`，
+  也不会触发混合内容拦截；
+- 管理接口的校验允许两种来源：回环地址，或携带同源 `Origin` 的浏览器请求（防止跨站伪造）。
 
 ## 界面与行为
 

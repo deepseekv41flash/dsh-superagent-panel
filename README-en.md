@@ -30,7 +30,7 @@ DSH NEXT (dsh-app://app)
 
 | Item | Notes |
 |---|---|
-| DSH NEXT | A desktop DSH install (the plugin loads in the Web host too, but the embedded panel needs the desktop host) |
+| DSH host | Desktop (DSH NEXT) or Web (`dsh web`) both work; the plugin does not depend on Electron, and the Web host avoids the cross-scheme iframe issue entirely |
 | dsh-superagent | Set up from the prototype, service running under profile `superagent` on port `3082` (Windows adaptation patches: [superagent-playground](https://github.com/deepseekv41flash/superagent-playground)) |
 | Service-side bridge | `dsh-superagent-bridge` must be installed in the **profile that runs the service**, otherwise the iframe has no page to show |
 
@@ -91,6 +91,21 @@ node scripts/dsh-superagent.mjs start --profile superagent
 
 `autoStart` only covers the "not running" case: a service stopped on purpose keeps a `manually-stopped`
 marker and is not started automatically; run `start` once (or delete the marker) to re-enable it.
+
+## Web host
+
+The same plugin works in a `dsh web` host (`dsh.client.platform` is `web` by design):
+
+- install it into the **profile that `dsh web` runs** (the profile named by `--profile`, `web` by default):
+  `dsh plugin --profile web add dsh-superagent-panel`, and make sure that profile lists it in
+  `dsh.profile.bundles`;
+- open the URL `dsh web` prints: the Superagent sidebar entry, the embedded panel, theme injection,
+  "Open main Session", start/stop/restart and `autoStart` all behave the same;
+- the Web page origin is `http(s)://<host>:<port>`, so the same-origin proxied iframe just works — the
+  `dsh-app://` cross-scheme block does not exist here; even over HTTPS the proxy forwards to
+  `http://127.0.0.1:3082` on the server side, so there is no mixed-content block;
+- the management endpoints accept either loopback requests or browser requests whose `Origin` matches
+  the request `Host` (cross-site forgery is still rejected).
 
 ## Behaviour
 
