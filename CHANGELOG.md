@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.3 — 2026-11-02
+
+- **修复官方 DeepSeek Harness 桌面版上的 client 加载失败**（issue #3）：此前
+  `dsh.client.inject` 声明了 `@deepseek-ai/dsh-client-ui-slots`。该包只是插槽实现的**库**，
+  不是客户端插件模块，也不保证被宿主运行时打包（例如官方桌面版 0.2.1-rc.5 的资源里就没有它），
+  于是 client 半边在加载/组装阶段失败，侧栏入口不出现。
+  现在**不再声明任何 `dsh.client.inject`**：本插件运行时只 `require('react')`（基线模块），
+  `slots` / `locale` / `uiWorkspace` 等一律通过 Cordis 服务注入等待，由宿主的核心 UI 提供，
+  因此对宿主打包的客户端包没有硬依赖。
+- README 增加「宿主兼容性」一节：说明 DSH NEXT（desktop-next）与官方桌面版的差异，
+  以及官方桌面版 profile 由 Electron 独占、需要手工安装（CLI `dsh plugin` 会被拒绝）。
+
 ## 0.2.2 — 2026-11-01
 
 - 修正 `autoStart` 的触发条件：只在启动器退出码为 `1`（未运行）时拉起。

@@ -122,6 +122,29 @@ node scripts/dsh-superagent.mjs start --profile superagent
 marker and is not started automatically; run `start` once (or delete the marker) to re-enable it.
 With several instances each one is checked separately (only the instances with `autoStart: true` start).
 
+## Host compatibility
+
+| Host | Status |
+|---|---|
+| DSH NEXT desktop (desktop-next; verified on `2.0.21-next` / DSH `0.2.1-rc.4`) | Works |
+| `dsh web` (Web host) | Works (see the next section) |
+| Official DeepSeek Harness desktop (e.g. `0.2.1-rc.5`) | client load failure fixed in 0.2.3 (issue #3); real-device confirmation pending |
+
+Notes:
+
+- **Since 0.2.3 the plugin declares no `dsh.client.inject`.** It used to declare
+  `@deepseek-ai/dsh-client-ui-slots`, but that package is a slot **library**, not a client plugin
+  module, and hosts are not required to bundle it; on a host that does not (e.g. official desktop
+  `0.2.1-rc.5`) the client half failed during load/composition and the sidebar entry never appeared.
+  The only runtime module the client requires is the baseline `react`; `slots`, `locale` and
+  `uiWorkspace` all arrive as Cordis services from the host's core UI.
+- **The official desktop manages its profile exclusively through Electron**: `dsh plugin --profile desktop add …`
+  is rejected (`profile "desktop" is managed exclusively by the Electron application`), so install by hand:
+  1. add `"dsh-superagent-panel": "<version or local path>"` to that profile's `package.json` `dependencies`;
+  2. add `"dsh-superagent-panel"` to `dsh.profile.bundles`;
+  3. run `pnpm install` in the profile directory (or let the app re-resolve dependencies), then restart the app.
+- If it still fails, paste the `client-modules:` error from the DSH log into the issue.
+
 ## Web host
 
 The same plugin works in a `dsh web` host (`dsh.client.platform` is `web` by design):

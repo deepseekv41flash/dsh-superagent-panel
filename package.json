@@ -1,6 +1,6 @@
 {
   "name": "dsh-superagent-panel",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "DeepSeek Harness (DSH) plugin: a DSH NEXT sidebar entry that embeds the dsh-superagent management panel in a same-origin iframe and starts/stops/restarts one or more services.",
   "keywords": [
     "deepseek-harness",
@@ -50,10 +50,7 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "platform": "web",
-      "inject": [
-        "@deepseek-ai/dsh-client-ui-slots"
-      ]
+      "platform": "web"
     }
   },
   "scripts": {

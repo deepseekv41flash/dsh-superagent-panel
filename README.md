@@ -122,6 +122,27 @@ node scripts/dsh-superagent.mjs start --profile superagent
 插件不会把它自动拉起来；要恢复自动启动，先 `start` 一次（或删掉该标记）。
 配置多个实例时，每个实例分别判断（可以只给其中几个实例设 `autoStart: true`）。
 
+## 宿主兼容性
+
+| 宿主 | 状态 |
+|---|---|
+| DSH NEXT 桌面端（desktop-next，实测 `2.0.21-next` / DSH `0.2.1-rc.4`） | 验证通过 |
+| `dsh web`（Web 宿主） | 验证通过（见下一节） |
+| 官方 DeepSeek Harness 桌面版（如 `0.2.1-rc.5`） | 0.2.3 起修复了 client 加载失败（issue #3）；待实机复验 |
+
+说明：
+
+- **0.2.3 起本插件不再声明 `dsh.client.inject`。** 之前声明了 `@deepseek-ai/dsh-client-ui-slots`，
+  但那只是一个插槽实现的**库**，不是客户端插件模块，也不保证被宿主运行时打包；在缺少它的宿主
+  （如官方桌面版 `0.2.1-rc.5`）上，client 半边会在加载/组装阶段失败，侧栏入口不出现。
+  插件的运行时依赖只有基线模块 `react`，`slots`/`locale`/`uiWorkspace` 等服务都由宿主核心 UI 提供。
+- **官方桌面版的 profile 由 Electron 独占**：`dsh plugin --profile desktop add …` 会被拒绝
+  （`profile "desktop" is managed exclusively by the Electron application`），需要手工安装：
+  1. 把 `"dsh-superagent-panel": "<版本或本地路径>"` 加进该 profile `package.json` 的 `dependencies`；
+  2. 把 `"dsh-superagent-panel"` 加进 `dsh.profile.bundles`；
+  3. 在该 profile 目录执行 `pnpm install`（或让应用重新解析依赖），然后重启应用。
+- 如果仍然加载失败，请把 DSH 日志里 `client-modules:` 开头的报错贴到 issue，便于定位宿主差异。
+
 ## Web 端
 
 同一份插件在 `dsh web` 的宿主里也能用（`dsh.client.platform` 本来就是 `web`）：
