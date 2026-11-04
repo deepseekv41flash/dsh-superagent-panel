@@ -126,7 +126,7 @@ node scripts/dsh-superagent.mjs start --profile superagent
 
 | 宿主 | 状态 |
 |---|---|
-| DSH NEXT 桌面端（desktop-next，实测 `2.0.21-next` / DSH `0.2.1-rc.4`） | 验证通过 |
+| DSH NEXT（社区第三方桌面端，[anywhere-labs/dsh-desktop](https://github.com/anywhere-labs/dsh-desktop)；实测 `2.0.21-next` / 内含 DSH `0.2.1-rc.4`） | 验证通过 |
 | `dsh web`（Web 宿主） | 验证通过（见下一节） |
 | 官方 DeepSeek Harness 桌面版（如 `0.2.1-rc.5`） | 0.2.3 起修复了 client 加载失败（issue #3）；待实机复验 |
 
@@ -136,6 +136,10 @@ node scripts/dsh-superagent.mjs start --profile superagent
   但那只是一个插槽实现的**库**，不是客户端插件模块，也不保证被宿主运行时打包；在缺少它的宿主
   （如官方桌面版 `0.2.1-rc.5`）上，client 半边会在加载/组装阶段失败，侧栏入口不出现。
   插件的运行时依赖只有基线模块 `react`，`slots`/`locale`/`uiWorkspace` 等服务都由宿主核心 UI 提供。
+- **DSH NEXT 是社区第三方桌面端**（`anywhere-labs/dsh-desktop`），不属于官方 DeepSeek Harness 桌面端产品线；
+  本插件的兼容性只取决于宿主是否实现 DSH 客户端模块协议、并提供核心 UI 服务（`slots` / `locale` /
+  `uiWorkspace` 等），与桌面端由谁维护无关。DSH NEXT 的 `2.0.21-next` 是自己的一套版本号，内含的
+  DSH 运行时版本是 `0.2.1-rc.4`。
 - **官方桌面版的 profile 由 Electron 独占**：`dsh plugin --profile desktop add …` 会被拒绝
   （`profile "desktop" is managed exclusively by the Electron application`），需要手工安装：
   1. 把 `"dsh-superagent-panel": "<版本或本地路径>"` 加进该 profile `package.json` 的 `dependencies`；

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.4 — 2026-11-02
+
+- 文档更正：澄清 **DSH NEXT 是社区第三方桌面端**（[anywhere-labs/dsh-desktop](https://github.com/anywhere-labs/dsh-desktop)），
+  不属于官方 DeepSeek Harness 桌面端产品线；`2.0.21-next` 是它自己的版本号（内含 DSH `0.2.1-rc.4`）。
+  插件兼容性只取决于宿主是否实现 DSH 客户端模块协议并提供核心 UI 服务，与桌面端由谁维护无关。
+  代码无变化（0.2.3 的 client 加载修复不变）。
+
 ## 0.2.3 — 2026-11-02
 
 - **修复官方 DeepSeek Harness 桌面版上的 client 加载失败**（issue #3）：此前
