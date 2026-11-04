@@ -128,7 +128,7 @@ node scripts/dsh-superagent.mjs start --profile superagent
 |---|---|
 | DSH NEXT（社区第三方桌面端，[anywhere-labs/dsh-desktop](https://github.com/anywhere-labs/dsh-desktop)；实测 `2.0.21-next` / 内含 DSH `0.2.1-rc.4`） | 验证通过 |
 | `dsh web`（Web 宿主） | 验证通过（见下一节） |
-| 官方 DeepSeek Harness 桌面版（如 `0.2.1-rc.5`） | 0.2.3 起修复了 client 加载失败（issue #3）；待实机复验 |
+| 官方 DeepSeek Harness 运行时 `0.2.1-rc.5`（以同版本 `dsh web` 实测；该运行时的 Web 应用**不含** `@deepseek-ai/dsh-client-ui-slots`） | **验证通过**（0.2.4 实测：侧栏入口、双实例切换、内嵌面板均正常；官方桌面 App 外壳本身未单独测试） |
 
 说明：
 

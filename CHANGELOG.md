@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.5 — 2026-11-04
+
+- 兼容性验证：在**官方 DeepSeek Harness `0.2.1-rc.5` 运行时**（同版本 `dsh web` 宿主）上实测 0.2.4：
+  该运行时的 Web 应用只依赖 `@deepseek-ai/dsh-client-ui-renderer`，**不再包含** `@deepseek-ai/dsh-client-ui-slots`
+  （与 issue #3 观察一致），插件侧栏入口、双实例切换、内嵌面板均正常；控制台无相关错误。
+- README（中英）兼容性表把 `0.2.1-rc.5` 一行改为「验证通过（以 `dsh web` 加载同版本运行时实测；
+  官方桌面 App 外壳本身未单独测试）」。代码无变化。
+
 ## 0.2.4 — 2026-11-02
 
 - 文档更正：澄清 **DSH NEXT 是社区第三方桌面端**（[anywhere-labs/dsh-desktop](https://github.com/anywhere-labs/dsh-desktop)），

@@ -128,7 +128,7 @@ With several instances each one is checked separately (only the instances with `
 |---|---|
 | DSH NEXT (community third-party desktop client, [anywhere-labs/dsh-desktop](https://github.com/anywhere-labs/dsh-desktop); verified on `2.0.21-next` with DSH runtime `0.2.1-rc.4`) | Works |
 | `dsh web` (Web host) | Works (see the next section) |
-| Official DeepSeek Harness desktop (e.g. `0.2.1-rc.5`) | client load failure fixed in 0.2.3 (issue #3); real-device confirmation pending |
+| Official DeepSeek Harness runtime `0.2.1-rc.5` (tested via a `dsh web` host of the same version; its Web app does **not** include `@deepseek-ai/dsh-client-ui-slots`) | **Verified** (0.2.4: sidebar entry, two-instance switcher and embedded panel all work; the official desktop app shell itself was not tested separately) |
 
 Notes:
 
